@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Address, Bee, PostageBatch } from '@ethersphere/bee-js';
-import './App.css';
+import '../App.css';
+import axios from 'axios';
 
 const beeUrl = 'http://localhost:3000';
 const POSTAGE_STAMPS_AMOUNT = String(10000);
 const POSTAGE_STAMPS_DEPTH = 20;
 const bee = new Bee(beeUrl);
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-function App() {
+function AppSwarm() {
     const [file, setFile] = useState<File | null>(null);
     const [link, setLink] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
@@ -21,6 +21,7 @@ function App() {
     const [stampError, setStampError] = useState<Error | null>(null);
 
     useEffect(() => {
+        console.log('useEffect(() => {');
         setLoadingStamps(true);
         bee.getAllPostageBatch()
             .then((ps: PostageBatch[]) => setPostageStamps(ps))
@@ -30,12 +31,19 @@ function App() {
 
     const createPostageStamp = async () => {
         try {
+            console.log('const createPostageStamp = async () => {');
+            console.log(500);
+            axios.get('/stamps').then((res) => {
+                console.log('this is response');
+                console.log(res);
+            });
             setCreatingStamp(true);
             await bee.createPostageBatch(POSTAGE_STAMPS_AMOUNT, POSTAGE_STAMPS_DEPTH);
             setCreatingStamp(false);
 
             setLoadingStamps(true);
             const ps = await bee.getAllPostageBatch();
+            console.log(ps);
             setPostageStamps(ps);
             setLoadingStamps(false);
         } catch (e) {
@@ -138,4 +146,4 @@ function App() {
     );
 }
 
-export default App;
+export default AppSwarm;
